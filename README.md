@@ -2,8 +2,11 @@
 We create a simple Usermangagement Spring boot Rest API.
 You only have to run a MariaSQL Database
 The theme is freeschool, you have to change this in following Files:
+
 api/src/main/resources/application.properties
+
 api/src/main/java/de/freeschool/api/controller/MetaController.java
+
 and the package name has to be refactored
 
 # Backend
