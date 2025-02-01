@@ -2,17 +2,16 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
-    id "org.openapi.generator" version "6.3.0"
     id "org.flywaydb.flyway" version "9.19.1"
     id 'application'
 }
 
-group = 'de.flussmark'
+group = 'de.freeschool'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 application {
-    mainClass = 'de.flussmark.api.FlussMarkApiApplication'
+    mainClass = 'de.freeschool.api.ApiApplication'
 }
 
 repositories {
@@ -50,37 +49,9 @@ dependencies {
 
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs "$buildDir/generated-sources/openapi"
-        }
-    }
-}
+
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-tasks.register('cleanOpenApi', Delete) {
-    delete "$buildDir/generated-sources/openapi"
-}
-
-openApiGenerate {
-    generatorName = "spring"
-    inputSpec = "$rootDir/apispec/api.yaml"
-    outputDir = "$buildDir/generated-sources/openapi"
-    apiPackage = "de.flussmark.openapi.stubs"
-    modelPackage = "de.flussmark.openapi.models"
-    validateSpec = true
-    configOptions = [
-            interfaceOnly       : "true",
-            useJakartaEe        : "true",
-            skipDefaultInterface: "true"
-    ]
-}
-
-openApiValidate {
-    inputSpec = "$rootDir/apispec/api.yaml"
-    recommend = true
-}
