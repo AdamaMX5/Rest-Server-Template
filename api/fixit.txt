@@ -1,0 +1,12 @@
+
+// 1. Import of openapi is not working in Intellij
+import de.flussmark.openapi.models.*;
+Go to: "File" > "Project Structure" > "Libraries"
+add: FlussMark\api\build\generated-sources\openapi\src\main\java
+
+// 2. OpenApiGenerate is not working well
+Delete Folder: FlussMark\api\build\generated-sources\openapi\src\main\java\de\flussmark\openapi
+Run: gradlew openApiGenerate
+If not working again, control the whitespaces in the yaml files
+
+

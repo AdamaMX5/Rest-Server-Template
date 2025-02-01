@@ -1,0 +1,6 @@
+/.metadata/
+/ui/flussmark/src/api/spec/
+.venv
+/txengine/pytxe/txengine.json
+/api/src/main/resources/overrides.properties
+*.pyc

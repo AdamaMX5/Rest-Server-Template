@@ -1,0 +1,63 @@
+version: '3'
+services:
+  api:
+    image: flussmark-api${IMAGE_VERSION}
+    ports:
+      - ${API_PORT:-8080}:8080
+    volumes:
+      - ${DATA_DIR}/data/mysql:/var/lib/mysql
+      - ${DATA_DIR}/data/overrides.properties:/api/overrides.properties
+      - "/etc/localtime:/etc/localtime"
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.services.${NAME}-api.loadbalancer.server.port=8080
+
+      # HTTP router rules
+      - traefik.http.routers.${NAME}-api-http.entrypoints=web
+      - traefik.http.routers.${NAME}-api-http.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers.${NAME}-api-http.middlewares=redirect-to-https-${NAME}-api
+
+      # HTTPS router rules
+      - traefik.http.routers.${NAME}-api-https.entrypoints=websecure
+      - traefik.http.routers.${NAME}-api-https.rule=Host(`${DOMAIN}`) && PathPrefix(`/api`)
+      - traefik.http.routers.${NAME}-api-https.tls=true
+      - traefik.http.routers.${NAME}-api-https.tls.certresolver=production
+      - traefik.http.routers.${NAME}-api-https.service=${NAME}-api
+
+      # Middleware configuration
+      - traefik.http.middlewares.redirect-to-https-${NAME}-api.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirect-to-https-${NAME}-api.redirectscheme.permanent=true
+
+  ui:
+    image: flussmark-ui${IMAGE_VERSION}
+    ports:
+      - ${UI_PORT:-3000}:3000
+    networks:
+      - traefik
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.services.${NAME}-ui.loadbalancer.server.port=3000
+
+      # HTTP router rules
+      - traefik.http.routers.${NAME}-ui-http.entrypoints=web
+      - traefik.http.routers.${NAME}-ui-http.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.${NAME}-ui-http.middlewares=redirect-to-https-${NAME}-ui
+
+      # HTTPS router rules
+      - traefik.http.routers.${NAME}-ui-https.entrypoints=websecure
+      - traefik.http.routers.${NAME}-ui-https.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.${NAME}-ui-https.tls=true
+      - traefik.http.routers.${NAME}-ui-https.tls.certresolver=production
+      - traefik.http.routers.${NAME}-ui-https.service=${NAME}-ui
+
+      # Middleware configuration
+      - traefik.http.middlewares.redirect-to-https-${NAME}-ui.redirectscheme.scheme=https
+      - traefik.http.middlewares.redirect-to-https-${NAME}-ui.redirectscheme.permanent=true
+
+networks:
+  traefik:
+    external: true
